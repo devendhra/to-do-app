@@ -35,6 +35,7 @@ exports.handler = async function (event) {
         });
 
         const data = await response.json();
+        console.log("gemini ai response:", data);
 
         if (!data.candidates || !data.candidates[0]) {
             return {
