@@ -12,6 +12,7 @@ exports.handler = async function (event) {
         }
 
         const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+        console.log(GEMINI_API_KEY);
 
         if (!GEMINI_API_KEY) {
             return {
