@@ -27,8 +27,9 @@
             <div class="flex flex-col sm:flex-row gap-4">
                 <div class="relative flex-1">
                     <input type="text" id="newTask" placeholder="What's next? 🤔"
-                    class="w-full px-6 py-4 text-lg rounded-2xl border-0  bg-gray-250 focus:bg-white focus:ring-4 focus:ring-purple-200 transition-all outline-none">
-                    <button id="voiceBtn" class="absolute right-2 top-1/2 -translate-y-1/2 bg-white text-black font-bold p-[18px] rounded-2xl ">
+                        class="w-full px-6 py-4 text-lg rounded-2xl border-0  bg-gray-250 focus:bg-white focus:ring-4 focus:ring-purple-200 transition-all outline-none">
+                    <button id="voiceBtn"
+                        class="absolute right-2 top-1/2 -translate-y-1/2 bg-white text-black font-bold p-[18px] rounded-2xl ">
                         🎤
                     </button>
                 </div>
@@ -96,6 +97,29 @@
             <p class="text-white/80 text-xl italic">Create a task. Dominate it. Repeat.</p>
         </div>
     </div>
+
+    <!-- AI Assistant  -->
+    <!-- Floating Chat Button -->
+    <button id="chatToggleBtn"
+        class="fixed bottom-6 right-6 z-50 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full w-16 h-16 text-2xl shadow-xl hover:scale-105 transition-all">
+        💬
+    </button>
+
+    <!-- Chat Box -->
+    <div id="chatBox"
+        class="hidden fixed bottom-24 right-6 w-80 bg-white rounded-3xl shadow-2xl p-4 z-50 flex-col gap-3 border border-gray-300 transition-all">
+
+        <div class="font-bold text-lg mb-2 text-purple-600">Ask AI Assistant 🤖</div>
+
+        <div id="chatMessages" class="bg-gray-100 p-2 rounded-lg h-40 overflow-y-auto text-sm"></div>
+
+        <div class="flex items-center gap-2">
+            <input id="chatInput" type="text" placeholder="Ask something..."
+                class="flex-1 px-3 py-2 rounded-lg border border-gray-300 outline-none focus:ring-2 focus:ring-purple-300" />
+            <button id="sendBtn" class="bg-purple-500 text-white px-3 py-2 rounded-lg hover:bg-purple-600">Send</button>
+        </div>
+    </div>
+
 
     <!-- Background Birds Animation  -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>

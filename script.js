@@ -1,8 +1,6 @@
 class ColorfulTodoApp {
     constructor() {
         this.tasks = JSON.parse(localStorage.getItem('colorful-tasks')) || [];
-        this.colors = ['color-1', 'color-2', 'color-3', 'color-4', 'color-5', 'color-6'];
-        this.currentColorIndex = 0;
         this.confettiTriggered = false;
         this.quotes = [
             "Push yourself, because no one else is going to do it for you.",
@@ -51,12 +49,10 @@ class ColorfulTodoApp {
             id: Date.now(),
             text: text,
             completed: false,
-            color: this.colors[this.currentColorIndex],
             priority: priority,
             createdAt: new Date().toLocaleString()
         };
 
-        this.currentColorIndex = (this.currentColorIndex + 1) % this.colors.length;
         this.tasks.unshift(task);
         input.value = '';
 
@@ -107,7 +103,7 @@ class ColorfulTodoApp {
         emptyState.style.display = 'none';
 
         container.innerHTML = this.tasks.map(task => `
-                    <div class="task-card bounce-in ${task.color} ${task.completed ? 'completed-task' : ''} rounded-3xl p-6 shadow-xl">
+                    <div class="task-card bounce-in ${task.completed ? 'completed-task' : ''} rounded-3xl p-6 shadow-xl">
                         <div class="flex justify-between items-start mb-4">
                             <button 
                                 onclick="app.toggleTask(${task.id})"
@@ -262,8 +258,55 @@ class ColorfulTodoApp {
         setTimeout(shoot, 200);
     }
 
+    
 
 }
 
 // Initialize the app
 const app = new ColorfulTodoApp();
+
+
+// === AI Chat Assistant UI and Logic ===
+const chatToggleBtn = document.getElementById('chatToggleBtn');
+const chatBox = document.getElementById('chatBox');
+const chatInput = document.getElementById('chatInput');
+const sendBtn = document.getElementById('sendBtn');
+const chatMessages = document.getElementById('chatMessages');
+
+// Show/hide chat box
+chatToggleBtn.addEventListener('click', () => {
+    chatBox.classList.toggle('hidden');
+});
+
+chatInput.addEventListener('keypress', (e) => {
+  if (e.key === 'Enter') sendBtn.click();
+});
+
+// Handle chat send
+sendBtn.addEventListener('click', async () => {
+    const userMsg = chatInput.value.trim();
+    if (!userMsg) return;
+
+    chatMessages.innerHTML += `<div class="text-right text-purple-700 mb-1">🙋‍♂️ ${userMsg}</div>`;
+    chatInput.value = '';
+    chatMessages.innerHTML += `<div class="text-gray-500 mb-1">🤖 Thinking...</div>`;
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+
+    try {
+        const res = await fetch('/.netlify/functions/askai', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ prompt: userMsg })
+        });
+
+        const data = await res.json();
+
+        chatMessages.innerHTML = chatMessages.innerHTML.replace("🤖 Thinking...", '');
+        chatMessages.innerHTML += `<div class="text-left text-gray-800 mb-2">🤖 ${data.answer}</div>`;
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+
+    } catch (error) {
+        console.error(error);
+        chatMessages.innerHTML += `<div class="text-left text-red-600 mb-2">❌ Error talking to AI</div>`;
+    }
+});
