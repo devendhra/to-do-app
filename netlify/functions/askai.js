@@ -11,50 +11,42 @@ exports.handler = async function (event) {
             };
         }
 
-        const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
-        console.log(GEMINI_API_KEY);
+        const API_KEY = process.env.OPENROUTER_API_KEY;
+        console.log(API_KEY);
 
-        if (!GEMINI_API_KEY) {
-            return {
-                statusCode: 500,
-                body: JSON.stringify({ error: 'Missing Gemini API key' })
-            };
-        }
-
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${GEMINI_API_KEY}`;
-
-        const response = await fetch(url, {
+        const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Authorization': `Bearer ${API_KEY}`,
+                'Content-Type': 'application/json',
+                'HTTP-Referer': 'https://devendhrastodoapp.netlify.app/', // Your site
+                'X-Title': 'DevaToDoAI'
             },
             body: JSON.stringify({
-                contents: [{
-                    parts: [{ text: prompt }]
-                }]
+                model: "mistralai/mixtral-8x7b", // You can try other models later
+                messages: [{ role: "user", content: prompt }]
             })
         });
 
         const data = await response.json();
-        console.log("gemini ai response:", data);
+        console.log("OpenRouter Response:", data);
 
-        if (!data.candidates || !data.candidates[0]) {
+        if (!data.choices || !data.choices[0]) {
             return {
                 statusCode: 500,
-                body: JSON.stringify({ error: 'Invalid response from Gemini' })
+                body: JSON.stringify({ error: 'Invalid response from AI' })
             };
         }
 
         return {
             statusCode: 200,
-            body: JSON.stringify({ answer: data.candidates[0].content.parts[0].text })
+            body: JSON.stringify({ answer: data.choices[0].message.content })
         };
-
     } catch (error) {
-        console.error("Gemini Function Error:", error);
+        console.error("OpenRouter Function Error:", error);
         return {
             statusCode: 500,
-            body: JSON.stringify({ error: 'Function error occurred', detail: error.message })
+            body: JSON.stringify({ error: 'Function error', detail: error.message })
         };
     }
 };
