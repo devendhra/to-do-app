@@ -1,4 +1,4 @@
-const fetch = require('node-fetch'); // For Node 18
+const fetch = require('node-fetch');
 
 exports.handler = async function (event) {
     try {
@@ -11,46 +11,45 @@ exports.handler = async function (event) {
             };
         }
 
-        const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
-        console.log("ENV API KEY:", OPENAI_API_KEY); // This should NOT be undefined!
+        const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 
-        if (!OPENAI_API_KEY) {
+        if (!GEMINI_API_KEY) {
             return {
                 statusCode: 500,
-                body: JSON.stringify({ error: 'Missing OpenAI API key' })
+                body: JSON.stringify({ error: 'Missing Gemini API key' })
             };
         }
 
-        const openaiRes = await fetch('https://api.openai.com/v1/chat/completions', {
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${GEMINI_API_KEY}`;
+
+        const response = await fetch(url, {
             method: 'POST',
             headers: {
-                'Authorization': `Bearer ${OPENAI_API_KEY}`,
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                model: 'gpt-3.5-turbo',
-                messages: [{ role: 'user', content: prompt }],
-                temperature: 0.7
+                contents: [{
+                    parts: [{ text: prompt }]
+                }]
             })
         });
 
-        const data = await openaiRes.json();
-        console.log("OpenAI raw response:", data);
+        const data = await response.json();
 
-        if (!data.choices || !data.choices[0]) {
+        if (!data.candidates || !data.candidates[0]) {
             return {
                 statusCode: 500,
-                body: JSON.stringify({ error: 'Invalid response from OpenAI' })
+                body: JSON.stringify({ error: 'Invalid response from Gemini' })
             };
         }
 
         return {
             statusCode: 200,
-            body: JSON.stringify({ answer: data.choices[0].message.content.trim() })
+            body: JSON.stringify({ answer: data.candidates[0].content.parts[0].text })
         };
 
     } catch (error) {
-        console.error("AI Function Error:", error);
+        console.error("Gemini Function Error:", error);
         return {
             statusCode: 500,
             body: JSON.stringify({ error: 'Function error occurred', detail: error.message })
