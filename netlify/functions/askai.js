@@ -23,7 +23,7 @@ exports.handler = async function (event) {
                 'X-Title': 'DevaToDoAI'
             },
             body: JSON.stringify({
-                model: "mistralai/mixtral-8x7b", // You can try other models later
+                model: "openai/gpt-3.5-turbo",
                 messages: [{ role: "user", content: prompt }]
             })
         });
