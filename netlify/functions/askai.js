@@ -1,3 +1,4 @@
+const fetch = require('node-fetch'); // For Node 18
 
 exports.handler = async function (event) {
     try {
@@ -11,7 +12,7 @@ exports.handler = async function (event) {
         }
 
         const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
-        console.log("ENV API KEY:", OPENAI_API_KEY); // For Netlify logs
+        console.log("ENV API KEY:", OPENAI_API_KEY); // This should NOT be undefined!
 
         if (!OPENAI_API_KEY) {
             return {
