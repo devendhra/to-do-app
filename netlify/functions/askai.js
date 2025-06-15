@@ -1,6 +1,5 @@
-// netlify/functions/askai.js
 
-exports.handler = async function (event, context) {
+exports.handler = async function (event) {
     try {
         const { prompt } = JSON.parse(event.body || '{}');
 
@@ -11,8 +10,8 @@ exports.handler = async function (event, context) {
             };
         }
 
-        // Load API key from environment variable
         const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+        console.log("ENV API KEY:", OPENAI_API_KEY); // For Netlify logs
 
         if (!OPENAI_API_KEY) {
             return {
@@ -52,7 +51,7 @@ exports.handler = async function (event, context) {
         console.error("AI Function Error:", error);
         return {
             statusCode: 500,
-            body: JSON.stringify({ error: 'Function error occurred' })
+            body: JSON.stringify({ error: 'Function error occurred', detail: error.message })
         };
     }
 };
