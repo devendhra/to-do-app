@@ -23,7 +23,7 @@ exports.handler = async function (event) {
                 'X-Title': 'DevaToDoAI'
             },
             body: JSON.stringify({
-                model: "openrouter/openai/gpt-4o",
+                model: "openai/gpt-4o",
                 messages: [{ role: "user", content: prompt }]
             })
         });
