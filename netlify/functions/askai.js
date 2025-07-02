@@ -24,7 +24,8 @@ exports.handler = async function (event) {
             },
             body: JSON.stringify({
                 model: "openai/gpt-4o",
-                messages: [{ role: "user", content: prompt }]
+                messages: [{ role: "user", content: prompt }],
+                max_tokens: 500
             })
         });
 
